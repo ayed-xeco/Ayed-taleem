@@ -1,141 +1,186 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>تطبيق ذاتك - التعلم الذاتي</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    direction: rtl;
-    margin: 0; padding: 0;
-    background: #f0f4f8;
-  }
-  header, main {
-    max-width: 900px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-  }
-  h1, h2 {
-    color: #333;
-  }
-  input[type="text"] {
-    padding: 10px;
-    width: 80%;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  button {
-    background: #0b79d0;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  button:hover {
-    background: #095a9d;
-  }
-  .hidden {
-    display: none;
-  }
-  nav button {
-    display: block;
-    margin: 10px 0;
-    width: 100%;
-    text-align: right;
-  }
-  .lesson-video iframe {
-    width: 100%;
-    height: 315px;
-    border-radius: 8px;
-  }
-  .nav-buttons {
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تطبيق ذاتك - التعليم الذاتي التفاعلي</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 10px;
+      background: #f4f4f4;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #005a87;
+    }
+    button {
+      background-color: #005a87;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    button:hover:not(:disabled) {
+      background-color: #003f5c;
+    }
+    button:disabled {
+      background-color: #aaa;
+      cursor: default;
+    }
+    .hidden {
+      display: none;
+    }
+    #lessons-list button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      text-align: right;
+      padding: 15px;
+      font-size: 18px;
+      background-color: #009688;
+    }
+    #lessons-list button:hover {
+      background-color: #00675b;
+    }
+    #video-container {
+      text-align: center;
+      margin: 15px 0;
+    }
+    iframe {
+      width: 100%;
+      height: 250px;
+      border: none;
+      border-radius: 8px;
+    }
+    #test-answers button {
+      width: 100%;
+      margin: 8px 0;
+      font-size: 16px;
+      padding: 12px;
+    }
+    #chatbot {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    #chatbot p {
+      margin: 5px 0;
+    }
+    #chatbot .bot {
+      color: #00796b;
+    }
+    #chatbot .user {
+      text-align: right;
+      color: #555;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
 
-<header id="welcome-screen">
+<!-- شاشة الترحيب -->
+<div id="welcome-screen">
   <h1>مرحباً بك في تطبيق ذاتك</h1>
-  <p>يرجى إدخال اسمك للبدء:</p>
-  <input type="text" id="studentName" placeholder="اكتب اسمك هنا" />
-  <br />
-  <button onclick="startApp()">ابدأ التعلم</button>
-</header>
+  <p>من فضلك اكتب اسمك للبدء:</p>
+  <input type="text" id="student-name" placeholder="اسم الطالب" />
+  <button onclick="startApp()">ابدأ</button>
+</div>
 
-<main id="main-menu" class="hidden">
-  <h2>مرحباً، <span id="displayName"></span>!</h2>
-  <h3>اختر الدرس لتبدأ:</h3>
-  <nav id="lessons-list">
+<!-- الشاشة الرئيسية - قائمة الدروس -->
+<div id="main-menu" class="hidden">
+  <h2>مرحباً، <span id="display-name"></span></h2>
+  <h3>اختر الدرس:</h3>
+  <div id="lessons-list">
     <button onclick="openLesson(0)">الدرس الأول: مقدمة في التفكير النقدي</button>
     <button onclick="openLesson(1)">الدرس الثاني: التمييز بين الحقائق والآراء</button>
     <button onclick="openLesson(2)">الدرس الثالث: التفكير المنطقي وتحليل الحجج</button>
     <button onclick="openLesson(3)">الدرس الرابع: كشف المغالطات المنطقية</button>
     <button onclick="openLesson(4)">الدرس الخامس: اتخاذ القرار المستند إلى الأدلة</button>
-  </nav>
+  </div>
   <button onclick="openTests()">الاختبارات</button>
-</main>
+</div>
 
-<section id="lesson-screen" class="hidden">
+<!-- شاشة الدرس -->
+<div id="lesson-screen" class="hidden">
   <button onclick="backToMenu()">⬅ العودة إلى القائمة الرئيسية</button>
   <h2 id="lesson-title"></h2>
-  <div id="lesson-content"></div>
-</section>
+  <div id="video-container">
+    <iframe id="lesson-video" src="" allowfullscreen></iframe>
+  </div>
+  <p id="lesson-content"></p>
+</div>
 
-<section id="tests-screen" class="hidden">
-  <button onclick="backToMenu()">⬅ العودة إلى القائمة الرئيسية</button>
-  <h2>اختبارات الدروس</h2>
-  <div id="test-question"></div>
+<!-- شاشة الاختبار -->
+<div id="tests-screen" class="hidden">
+  <h2>اختبار مهارات التفكير النقدي</h2>
+  <p id="test-question"></p>
   <div id="test-answers"></div>
-  <button id="next-question-btn" onclick="nextQuestion()">السؤال التالي</button>
+  <button id="next-question-btn" onclick="nextQuestion()">التالي</button>
   <button id="finish-test-btn" class="hidden" onclick="finishTest()">إنهاء الاختبار</button>
-</section>
+  <button onclick="backToMenu()">⬅ العودة إلى القائمة الرئيسية</button>
+</div>
 
-<section id="results-screen" class="hidden">
+<!-- شاشة النتائج -->
+<div id="results-screen" class="hidden">
   <h2>نتائج الاختبار</h2>
   <p id="score-text"></p>
   <button onclick="backToMenu()">⬅ العودة إلى القائمة الرئيسية</button>
-</section>
+</div>
 
 <script>
-  // بيانات الدروس مع روابط الفيديو والمحتوى
+  // بيانات الدروس (العناوين، محتوى مختصر، وروابط فيديو اليوتيوب)
   const lessons = [
     {
       title: "مقدمة في التفكير النقدي",
-      content: `<p>التفكير النقدي هو القدرة على تحليل المعلومات واتخاذ قرارات سليمة.</p>`,
+      content: "في هذا الدرس سنتعرف على مفهوم التفكير النقدي وأهميته في حياتنا اليومية.",
       video: "https://www.youtube.com/embed/BMGgz2fElto"
     },
     {
       title: "التمييز بين الحقائق والآراء",
-      content: `<p>تعلم كيف تفرق بين الحقيقة والرأي في المعلومات التي تتلقاها.</p>`,
+      content: "سنتعلم كيف نميز بين الحقائق التي يمكن التحقق منها والآراء التي تعتمد على وجهات نظر شخصية.",
       video: "https://www.youtube.com/embed/0Qpyp9tc2RI"
     },
     {
       title: "التفكير المنطقي وتحليل الحجج",
-      content: `<p>استخدام المنطق لتحليل الحجج ودعم مواقفك بشكل فعال.</p>`,
+      content: "نتعرف على كيفية استخدام التفكير المنطقي لتحليل الحجج والتمييز بين الصواب والخطأ.",
       video: "https://www.youtube.com/embed/TA0vriGmhhI"
     },
     {
       title: "كشف المغالطات المنطقية",
-      content: `<p>تعرف على الأخطاء المنطقية الشائعة وتجنبها في النقاشات.</p>`,
+      content: "سنستعرض أبرز أنواع المغالطات المنطقية وكيفية كشفها لتجنب الوقوع فيها.",
       video: "https://www.youtube.com/embed/lQ3hh7wvpIA"
     },
     {
       title: "اتخاذ القرار المستند إلى الأدلة",
-      content: `<p>كيف تتخذ قرارات مبنية على أدلة واضحة ومنطقية.</p>`,
+      content: "كيفية اتخاذ قرارات سليمة بناءً على الأدلة والمعلومات الموثوقة.",
       video: "https://www.youtube.com/embed/7nTKrXiRJPM"
     }
   ];
 
-  // بيانات أسئلة الاختبار (مثال بسيط)
+  // بيانات أسئلة الاختبار (10 أسئلة، 2 لكل درس)
   const testQuestions = [
+    // درس 1
     {
       question: "ما هو التفكير النقدي؟",
       answers: [
@@ -145,6 +190,15 @@
       ]
     },
     {
+      question: "لماذا التفكير النقدي مهم؟",
+      answers: [
+        { text: "لمساعدتك على اتخاذ قرارات سليمة", correct: true },
+        { text: "لتجنب التفكير", correct: false },
+        { text: "لتعقيد الأمور", correct: false },
+      ]
+    },
+    // درس 2
+    {
       question: "كيف تميز بين الحقيقة والرأي؟",
       answers: [
         { text: "باستخدام الأدلة والتحقق", correct: true },
@@ -152,102 +206,35 @@
         { text: "الاعتماد على الشائعات", correct: false },
       ]
     },
-    // يمكن إضافة المزيد من الأسئلة هنا...
-  ];
-
-  let currentLessonIndex = 0;
-  let currentQuestionIndex = 0;
-  let score = 0;
-
-  function startApp() {
-    const nameInput = document.getElementById("studentName");
-    const name = nameInput.value.trim();
-    if (!name) {
-      alert("يرجى إدخال الاسم للمتابعة.");
-      return;
-    }
-    document.getElementById("displayName").textContent = name;
-    document.getElementById("welcome-screen").classList.add("hidden");
-    document.getElementById("main-menu").classList.remove("hidden");
-  }
-
-  function openLesson(index) {
-    currentLessonIndex = index;
-    const lesson = lessons[index];
-    document.getElementById("lesson-title").textContent = lesson.title;
-    document.getElementById("lesson-content").innerHTML = `
-      <p>${lesson.content}</p>
-      <div class="lesson-video">
-        <iframe src="${lesson.video}" title="فيديو ${lesson.title}" frameborder="0" allowfullscreen></iframe>
-      </div>
-    `;
-    document.getElementById("main-menu").classList.add("hidden");
-    document.getElementById("lesson-screen").classList.remove("hidden");
-  }
-
-  function backToMenu() {
-    document.getElementById("lesson-screen").classList.add("hidden");
-    document.getElementById("tests-screen").classList.add("hidden");
-    document.getElementById("results-screen").classList.add("hidden");
-    document.getElementById("main-menu").classList.remove("hidden");
-  }
-
-  // فتح صفحة الاختبارات
-  function openTests() {
-    currentQuestionIndex = 0;
-    score = 0;
-    showQuestion();
-    document.getElementById("main-menu").classList.add("hidden");
-    document.getElementById("tests-screen").classList.remove("hidden");
-    document.getElementById("finish-test-btn").classList.add("hidden");
-    document.getElementById("next-question-btn").classList.remove("hidden");
-  }
-
-  function showQuestion() {
-    const questionObj = testQuestions[currentQuestionIndex];
-    const questionDiv = document.getElementById("test-question");
-    const answersDiv = document.getElementById("test-answers");
-
-    questionDiv.textContent = questionObj.question;
-    answersDiv.innerHTML = "";
-
-    questionObj.answers.forEach((answer, idx) => {
-      const btn = document.createElement("button");
-      btn.textContent = answer.text;
-      btn.onclick = () => selectAnswer(answer.correct, btn);
-      answersDiv.appendChild(btn);
-    });
-  }
-
-  function selectAnswer(isCorrect, btn) {
-    if (isCorrect) {
-      score++;
-      btn.style.backgroundColor = "green";
-    } else {
-      btn.style.backgroundColor = "red";
-    }
-    // تعطيل جميع الأزرار بعد الإجابة
-    Array.from(document.getElementById("test-answers").children).forEach(b => b.disabled = true);
-
-    // إظهار زر التالي أو الانتهاء
-    if (currentQuestionIndex === testQuestions.length - 1) {
-      document.getElementById("next-question-btn").classList.add("hidden");
-      document.getElementById("finish-test-btn").classList.remove("hidden");
-    }
-  }
-
-  function nextQuestion() {
-    currentQuestionIndex++;
-    showQuestion();
-  }
-
-  function finishTest() {
-    document.getElementById("tests-screen").classList.add("hidden");
-    document.getElementById("results-screen").classList.remove("hidden");
-    const percent = Math.round((score / testQuestions.length) * 100);
-    document.getElementById("score-text").textContent = `لقد حصلت على ${score} من ${testQuestions.length} (${percent}%)`;
-  }
-</script>
-
-</body>
-</html>
+    {
+      question: "أي من التالي يعتبر حقيقة؟",
+      answers: [
+        { text: "السماء زرقاء في يوم صافٍ", correct: true },
+        { text: "أحب اللون الأزرق", correct: false },
+        { text: "الجو جميل اليوم", correct: false },
+      ]
+    },
+    // درس 3
+    {
+      question: "ما هو الهدف من التفكير المنطقي؟",
+      answers: [
+        { text: "تحليل الحجج بموضوعية", correct: true },
+        { text: "إعطاء رأي بدون دليل", correct: false },
+        { text: "الإقناع بالعواطف فقط", correct: false },
+      ]
+    },
+    {
+      question: "ما هو تحليل الحجة؟",
+      answers: [
+        { text: "فهم الأدلة لدعم الفكرة", correct: true },
+        { text: "تجاهل الأدلة", correct: false },
+        { text: "استخدام المغالطات", correct: false },
+      ]
+    },
+    // درس 4
+    {
+      question: "ما هي المغالطة المنطقية؟",
+      answers: [
+        { text: "خطأ في التفكير أو الحجة", correct: true },
+        { text: "حقيقة مثبتة", correct: false },
+        { text: "رأي شخص
