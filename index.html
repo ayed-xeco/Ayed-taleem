@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تعلّم بذكاء</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="startScreen">
+    <h1>مرحبًا بك في "تعلّم بذكاء"</h1>
+    <p>أدخل اسمك للبدء:</p>
+    <input type="text" id="userName" placeholder="اسم الطالب" />
+    <button onclick="startLessons()">ابدأ</button>
+  </div>
+
+  <div id="lessonScreen" class="hidden">
+    <h2 id="welcomeName"></h2>
+    <div id="progressBar">
+      <div id="progress"></div>
+    </div>
+    <div id="lessonContent"></div>
+    <button onclick="nextLesson()">التالي</button>
+  </div>
+
+  <div id="quizScreen" class="hidden">
+    <h2>اختبار سريع</h2>
+    <div id="quizContent"></div>
+    <button onclick="submitQuiz()">تحقق من الإجابات</button>
+  </div>
+
+  <div id="resultScreen" class="hidden">
+    <h2>النتائج</h2>
+    <p id="resultText"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
