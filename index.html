@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تطبيق تعليم ذاتي تفاعلي</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      direction: rtl;
+      margin: 0;
+      background: #f0f4f8;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      text-align: center;
+      color: #0d47a1;
+    }
+    .hidden {
+      display: none;
+    }
+    .button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .button:disabled {
+      background-color: #9ec6f1;
+      cursor: default;
+    }
+    .question, .lesson {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 15px 0;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+    }
+    .options label {
+      margin-bottom: 10px;
+    }
+    .progress-bar {
+      height: 12px;
+      background: #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    .progress {
+      height: 100%;
+      background: #1976d2;
+      width: 0%;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- الصفحة 1: البداية -->
+    <div id="startScreen">
+      <h1>مرحباً بك في تطبيق التعليم الذاتي</h1>
+      <input type="text" id="userName" placeholder="ادخل اسمك للبدء" />
+      <div style="text-align: center;">
+        <button class="button" onclick="startLessons()">ابدأ</button>
+      </div>
+    </div>
+
+    <!-- الصفحة 2: عرض الدروس -->
+    <div id="lessonScreen" class="hidden">
+      <h2 id="welcomeName"></h2>
+      <div class="progress-bar"><div id="lessonProgress" class="progress"></div></div>
+      <div id="lessonText" class="lesson"></div>
+      <div style="text-align:center;">
+        <button class="button" onclick="prevLesson()">السابق</button>
+        <button class="button" onclick="nextLesson()">التالي</button>
+      </div>
+    </div>
+
+    <!-- الصفحة 3: الأسئلة -->
+    <div id="quizScreen" class="hidden">
+      <h2>سؤال بعد الدرس</h2>
+      <div id="questionText" class="question"></div>
+      <div id="options" class="options"></div>
+      <div style="text-align:center;">
+        <button class="button" onclick="submitAnswer()">إرسال</button>
+      </div>
+    </div>
+
+    <!-- الصفحة 4: النتيجة -->
+    <div id="resultScreen" class="hidden">
+      <h2>نتيجتك النهائية</h2>
+      <p id="finalResult" style="text-align:center; font-size: 20px;"></p>
+      <div style="text-align:center;">
+        <button class="button" onclick="location.reload()">إعادة</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const lessons = [
+      "هذا هو الدرس الأول: مقدمة في التنظيم الذاتي.",
+      "الدرس الثاني: تحديد الأهداف التعليمية.",
+      "الدرس الثالث: إدارة الوقت أثناء التعلم.",
+      "الدرس الرابع: تقييم التقدم وتحسينه.",
+    ];
+
+    const questions = [
+      {
+        question: "ما هو التنظيم الذاتي؟",
+        options: ["تنظيم الحاسوب", "إدارة الشخص لسلوكه وتعلمه", "تنظيم الحصة الدراسية"],
+        correct: 1
+      },
+      {
+        question: "ما الهدف من تحديد أهداف تعليمية؟",
+        options: ["لضياع الوقت", "لتقوية العضلات", "لتحقيق نتائج واضحة"],
+        correct: 2
+      },
+      {
+        question: "كيف يتم إدارة الوقت؟",
+        options: ["بوضع خطة زمنية", "بتأجيل المهام", "بالتصفح العشوائي"],
+        correct: 0
+      },
+      {
+        question: "ما أهمية تقييم التقدم؟",
+        options: ["لمعرفة نقاط القوة والضعف", "لإضاعة الوقت", "لا حاجة له"],
+        correct: 0
+      }
+    ];
+
+    let currentLesson = 0;
+    let score = 0;
+    let userName = "";
+
+    function startLessons() {
+      const input = document.getElementById("userName").value.trim();
+      if (input === "") {
+        alert("يرجى إدخال الاسم");
+        return;
+      }
+      userName = input;
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("lessonScreen").classList.remove("hidden");
+      document.getElementById("welcomeName").textContent = "مرحباً، " + userName;
+      showLesson();
+    }
+
+    function showLesson() {
+      document.getElementById("lessonText").textContent = lessons[currentLesson];
+      document.getElementById("lessonProgress").style.width = ((currentLesson + 1) / lessons.length) * 100 + "%";
+    }
+
+    function nextLesson() {
+      if (currentLesson < lessons.length - 1) {
+        currentLesson++;
+        showLesson();
+      } else {
+        document.getElementById("lessonScreen").classList.add("hidden");
+        showQuestion();
+        document.getElementById("quizScreen").classList.remove("hidden");
+      }
+    }
+
+    function prevLesson() {
+      if (currentLesson > 0) {
+        currentLesson--;
+        showLesson();
+      }
+    }
+
+    let currentQuestion = 0;
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("questionText").textContent = q.question;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      q.options.forEach((opt, index) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "q";
+        input.value = index;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(" " + opt));
+        optionsDiv.appendChild(label);
+      });
+    }
+
+    function submitAnswer() {
+      const selected = document.querySelector('input[name="q"]:checked');
+      if (!selected) {
+        alert("يرجى اختيار إجابة");
+        return;
+      }
+      if (parseInt(selected.value) === questions[currentQuestion].correct) {
+        score++;
+      }
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        document.getElementById("quizScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.remove("hidden");
+        document.getElementById("finalResult").textContent = `${userName}، لقد أجبت بشكل صحيح على ${score} من ${questions.length} أسئلة.`;
+      }
+    }
+  </script>
+</body>
+</html>
