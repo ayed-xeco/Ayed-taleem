@@ -58,6 +58,13 @@
     display: flex;
     justify-content: space-between;
   }
+  /* تعديل أزرار الإجابات لتكون في أسطر منفصلة */
+  #test-answers button {
+    display: block;
+    width: 100%;
+    margin: 6px 0;
+    text-align: right;
+  }
 </style>
 </head>
 <body>
@@ -105,7 +112,6 @@
 </section>
 
 <script>
-  // بيانات الدروس مع روابط الفيديو والمحتوى
   const lessons = [
     {
       title: "مقدمة في التفكير النقدي",
@@ -134,97 +140,96 @@
     }
   ];
 
-  // بيانات أسئلة الاختبار (مثال بسيط)
   const testQuestions = [
-  // درس 1
-  {
-    question: "ما هو التفكير النقدي؟",
-    answers: [
-      { text: "اتخاذ قرارات عشوائية", correct: false },
-      { text: "تحليل المعلومات بشكل منطقي", correct: true },
-      { text: "اتباع آراء الآخرين بدون تفكير", correct: false },
-    ]
-  },
-  {
-    question: "لماذا التفكير النقدي مهم؟",
-    answers: [
-      { text: "لمساعدتك على اتخاذ قرارات سليمة", correct: true },
-      { text: "لتجنب التفكير", correct: false },
-      { text: "لتأكيد آرائك فقط", correct: false },
-    ]
-  },
+    // درس 1
+    {
+      question: "ما هو التفكير النقدي؟",
+      answers: [
+        { text: "اتخاذ قرارات عشوائية", correct: false },
+        { text: "تحليل المعلومات بشكل منطقي", correct: true },
+        { text: "اتباع آراء الآخرين بدون تفكير", correct: false },
+      ]
+    },
+    {
+      question: "لماذا التفكير النقدي مهم؟",
+      answers: [
+        { text: "لمساعدتك على اتخاذ قرارات سليمة", correct: true },
+        { text: "لتجنب التفكير", correct: false },
+        { text: "لتأكيد آرائك فقط", correct: false },
+      ]
+    },
 
-  // درس 2
-  {
-    question: "كيف تميز بين الحقيقة والرأي؟",
-    answers: [
-      { text: "باستخدام الأدلة والتحقق", correct: true },
-      { text: "باختيار ما يعجبك فقط", correct: false },
-      { text: "الاعتماد على الشائعات", correct: false },
-    ]
-  },
-  {
-    question: "ما هي الحقيقة؟",
-    answers: [
-      { text: "شيء يمكن التحقق منه وإثباته", correct: true },
-      { text: "رأي شخصي", correct: false },
-      { text: "معتقدات غير قابلة للنقاش", correct: false },
-    ]
-  },
+    // درس 2
+    {
+      question: "كيف تميز بين الحقيقة والرأي؟",
+      answers: [
+        { text: "باستخدام الأدلة والتحقق", correct: true },
+        { text: "باختيار ما يعجبك فقط", correct: false },
+        { text: "الاعتماد على الشائعات", correct: false },
+      ]
+    },
+    {
+      question: "ما هي الحقيقة؟",
+      answers: [
+        { text: "شيء يمكن التحقق منه وإثباته", correct: true },
+        { text: "رأي شخصي", correct: false },
+        { text: "معتقدات غير قابلة للنقاش", correct: false },
+      ]
+    },
 
-  // درس 3
-  {
-    question: "ما هو الهدف من التفكير المنطقي؟",
-    answers: [
-      { text: "تحليل الحجج ودعم المواقف بشكل منطقي", correct: true },
-      { text: "تجاهل الأدلة المتاحة", correct: false },
-      { text: "الاعتماد على الحدس فقط", correct: false },
-    ]
-  },
-  {
-    question: "كيف يمكنك تحليل الحجة بشكل صحيح؟",
-    answers: [
-      { text: "بتقييم الأدلة والتأكد من صحة الاستنتاج", correct: true },
-      { text: "بمقارنة الحجة بمشاعرك فقط", correct: false },
-      { text: "بقبول كل ما يقال بدون تساؤل", correct: false },
-    ]
-  },
+    // درس 3
+    {
+      question: "ما هو الهدف من التفكير المنطقي؟",
+      answers: [
+        { text: "تحليل الحجج ودعم المواقف بشكل منطقي", correct: true },
+        { text: "تجاهل الأدلة المتاحة", correct: false },
+        { text: "الاعتماد على الحدس فقط", correct: false },
+      ]
+    },
+    {
+      question: "كيف يمكنك تحليل الحجة بشكل صحيح؟",
+      answers: [
+        { text: "بتقييم الأدلة والتأكد من صحة الاستنتاج", correct: true },
+        { text: "بمقارنة الحجة بمشاعرك فقط", correct: false },
+        { text: "بقبول كل ما يقال بدون تساؤل", correct: false },
+      ]
+    },
 
-  // درس 4
-  {
-    question: "ما هي المغالطة المنطقية؟",
-    answers: [
-      { text: "خطأ في التفكير أو الحجة", correct: true },
-      { text: "حقيقة مثبتة", correct: false },
-      { text: "رأي شخصي", correct: false },
-    ]
-  },
-  {
-    question: "كيف تتجنب المغالطات؟",
-    answers: [
-      { text: "بمراجعة الأدلة والمنطق", correct: true },
-      { text: "بتجاهل الحجج المعارضة", correct: false },
-      { text: "بالاعتماد على المشاعر فقط", correct: false },
-    ]
-  },
+    // درس 4
+    {
+      question: "ما هي المغالطة المنطقية؟",
+      answers: [
+        { text: "خطأ في التفكير أو الحجة", correct: true },
+        { text: "حقيقة مثبتة", correct: false },
+        { text: "رأي شخصي", correct: false },
+      ]
+    },
+    {
+      question: "كيف تتجنب المغالطات؟",
+      answers: [
+        { text: "بمراجعة الأدلة والمنطق", correct: true },
+        { text: "بتجاهل الحجج المعارضة", correct: false },
+        { text: "بالاعتماد على المشاعر فقط", correct: false },
+      ]
+    },
 
-  // درس 5
-  {
-    question: "كيف تتخذ قرارًا مستندًا إلى الأدلة؟",
-    answers: [
-      { text: "بتقييم الأدلة المتاحة بعناية", correct: true },
-      { text: "باتباع العواطف فقط", correct: false },
-      { text: "بالتسرع دون تفكير", correct: false },
-    ]
-  },
-  {
-    question: "ما فائدة اتخاذ القرار المبني على الأدلة؟",
-    answers: [
-      { text: "زيادة فرص نجاح القرار", correct: true },
-      { text: "زيادة الارتباك", correct: false },
-      { text: "تجنب التفكير", correct: false },
-    ]
-  },
+    // درس 5
+    {
+      question: "كيف تتخذ قرارًا مستندًا إلى الأدلة؟",
+      answers: [
+        { text: "بتقييم الأدلة المتاحة بعناية", correct: true },
+        { text: "باتباع العواطف فقط", correct: false },
+        { text: "بالتسرع دون تفكير", correct: false },
+      ]
+    },
+    {
+      question: "ما فائدة اتخاذ القرار المبني على الأدلة؟",
+      answers: [
+        { text: "زيادة فرص نجاح القرار", correct: true },
+        { text: "زيادة الارتباك", correct: false },
+        { text: "تجنب التفكير", correct: false },
+      ]
+    },
   ];
 
   let currentLessonIndex = 0;
@@ -264,7 +269,6 @@
     document.getElementById("main-menu").classList.remove("hidden");
   }
 
-  // فتح صفحة الاختبارات
   function openTests() {
     currentQuestionIndex = 0;
     score = 0;
@@ -283,7 +287,13 @@
     questionDiv.textContent = questionObj.question;
     answersDiv.innerHTML = "";
 
-    questionObj.answers.forEach((answer, idx) => {
+    // خلط ترتيب الإجابات عشوائياً
+    const shuffledAnswers = questionObj.answers
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+
+    shuffledAnswers.forEach((answer) => {
       const btn = document.createElement("button");
       btn.textContent = answer.text;
       btn.onclick = () => selectAnswer(answer.correct, btn);
@@ -298,7 +308,7 @@
     } else {
       btn.style.backgroundColor = "red";
     }
-    // تعطيل جميع الأزرار بعد الإجابة
+    // تعطيل جميع الأزرار بعد اختيار إجابة
     Array.from(document.getElementById("test-answers").children).forEach(b => b.disabled = true);
 
     // إظهار زر التالي أو الانتهاء
