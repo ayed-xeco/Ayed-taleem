@@ -1,39 +1,254 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تعلّم بذكاء</title>
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تطبيق ذاتك - التعليم الذاتي</title>
+<style>
+  body { font-family: Arial, sans-serif; direction: rtl; padding: 20px; background: #f0f4f8; }
+  .hidden { display: none; }
+  button { padding: 10px 15px; margin: 5px; cursor: pointer; background-color: #007bff; border: none; color: white; border-radius: 4px; }
+  button:hover { background-color: #0056b3; }
+  h2 { color: #333; }
+  .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  #lesson-content { margin-top: 15px; }
+  .nav-button { background-color: #28a745; }
+  .nav-button:hover { background-color: #1e7e34; }
+  ul { padding-right: 20px; }
+  input[type="text"] { padding: 8px; width: calc(100% - 20px); margin-bottom: 15px; font-size: 16px; }
+</style>
 </head>
 <body>
-  <div id="startScreen">
-    <h1>مرحبًا بك في "تعلّم بذكاء"</h1>
-    <p>أدخل اسمك للبدء:</p>
-    <input type="text" id="userName" placeholder="اسم الطالب" />
-    <button onclick="startLessons()">ابدأ</button>
+
+<div class="container">
+
+  <!-- شاشة الترحيب -->
+  <div id="welcome-screen">
+    <h2>مرحبًا بك في تطبيق ذاتك</h2>
+    <label for="student-name">ادخل اسمك:</label><br/>
+    <input type="text" id="student-name" placeholder="اسم الطالب" />
+    <button onclick="startApp()">ابدأ</button>
   </div>
 
-  <div id="lessonScreen" class="hidden">
-    <h2 id="welcomeName"></h2>
-    <div id="progressBar">
-      <div id="progress"></div>
+  <!-- الصفحة الرئيسية -->
+  <div id="home-screen" class="hidden">
+    <h2>مرحبًا، <span id="display-name"></span></h2>
+    <h3>اختر الدرس:</h3>
+    <div id="lessons-list">
+      <!-- أزرار الدروس ستضاف هنا ديناميكيًا -->
     </div>
-    <div id="lessonContent"></div>
-    <button onclick="nextLesson()">التالي</button>
+    <button onclick="showScreen('test-screen')">الاختبارات</button>
   </div>
 
-  <div id="quizScreen" class="hidden">
-    <h2>اختبار سريع</h2>
-    <div id="quizContent"></div>
-    <button onclick="submitQuiz()">تحقق من الإجابات</button>
+  <!-- شاشة الدرس -->
+  <div id="lesson-screen" class="hidden">
+    <button class="nav-button" onclick="showScreen('home-screen')">عودة للصفحة الرئيسية</button>
+    <h2 id="lesson-title"></h2>
+    <div id="lesson-content"></div>
   </div>
 
-  <div id="resultScreen" class="hidden">
-    <h2>النتائج</h2>
-    <p id="resultText"></p>
+  <!-- شاشة الاختبار -->
+  <div id="test-screen" class="hidden">
+    <button class="nav-button" onclick="showScreen('home-screen')">عودة للصفحة الرئيسية</button>
+    <h2>اختبار الوحدة</h2>
+    <div id="test-questions"></div>
+    <button onclick="submitTest()">إرسال الإجابات</button>
   </div>
 
-  <script src="script.js"></script>
+  <!-- شاشة النتائج -->
+  <div id="result-screen" class="hidden">
+    <h2>نتائج الاختبار</h2>
+    <p id="result-text"></p>
+    <button onclick="showScreen('home-screen')">العودة للصفحة الرئيسية</button>
+    <button onclick="showScreen('test-screen')">إعادة الاختبار</button>
+  </div>
+
+</div>
+
+<script>
+  // بيانات الدروس
+  const lessons = [
+    {
+      id: 1,
+      title: "مقدمة في التفكير النقدي",
+      content: `
+        <p>التفكير النقدي هو القدرة على التفكير بوضوح ومنطقي لفهم المشكلة واتخاذ القرارات.</p>
+        <p>في هذا الدرس، سنتعرف على أساسيات التفكير النقدي.</p>
+      `
+    },
+    {
+      id: 2,
+      title: "التمييز بين الحقائق والآراء",
+      content: `
+        <p>تعلم كيفية التمييز بين ما هو حقيقة وما هو رأي شخصي.</p>
+        <ul>
+          <li>الحقيقة يمكن التحقق منها.</li>
+          <li>الرأي يعبر عن وجهة نظر شخصية.</li>
+        </ul>
+      `
+    },
+    {
+      id: 3,
+      title: "التفكير المنطقي وتحليل الحُجج",
+      content: `
+        <p>سنتعلم كيف نبني حُججاً منطقية ونحللها لفهم مدى قوتها أو ضعفها.</p>
+      `
+    },
+    {
+      id: 4,
+      title: "كشف المغالطات المنطقية",
+      content: `
+        <p>أنواع المغالطات المنطقية الشائعة وكيفية التعرف عليها لتجنب الوقوع فيها.</p>
+      `
+    },
+    {
+      id: 5,
+      title: "اتخاذ القرار المستند إلى الأدلة",
+      content: `
+        <p>كيفية اتخاذ قرارات مستنيرة بناءً على الأدلة والمعلومات المتاحة.</p>
+      `
+    }
+  ];
+
+  // أسئلة الاختبار
+  const testQuestions = [
+    {
+      question: "ما هو التفكير النقدي؟",
+      options: ["التفكير بوضوح ومنطقي", "التسرع في الحكم", "اتباع الرأي العام"],
+      answer: 0
+    },
+    {
+      question: "ما الفرق بين الحقيقة والرأي؟",
+      options: ["الحقيقة لا يمكن التحقق منها", "الرأي هو وجهة نظر شخصية", "الحقيقة هي مجرد رأي"],
+      answer: 1
+    },
+    {
+      question: "ما هي المغالطات المنطقية؟",
+      options: ["حجج صحيحة", "حجج خاطئة توهم بأنها صحيحة", "حقائق"],
+      answer: 1
+    }
+  ];
+
+  // المتغيرات الأساسية
+  let studentName = "";
+  let currentLessonId = null;
+
+  // دالة بدء التطبيق
+  function startApp() {
+    const input = document.getElementById("student-name");
+    if(input.value.trim() === "") {
+      alert("يرجى إدخال الاسم للمتابعة");
+      return;
+    }
+    studentName = input.value.trim();
+    document.getElementById("display-name").textContent = studentName;
+    loadLessons();
+    showScreen("home-screen");
+  }
+
+  // تحميل قائمة الدروس في الصفحة الرئيسية
+  function loadLessons() {
+    const container = document.getElementById("lessons-list");
+    container.innerHTML = "";
+    lessons.forEach(lesson => {
+      const btn = document.createElement("button");
+      btn.textContent = `الدرس ${lesson.id}: ${lesson.title}`;
+      btn.onclick = () => openLesson(lesson.id);
+      container.appendChild(btn);
+    });
+  }
+
+  // عرض شاشة معينة وإخفاء الباقي
+  function showScreen(screenId) {
+    const screens = ["welcome-screen", "home-screen", "lesson-screen", "test-screen", "result-screen"];
+    screens.forEach(id => {
+      document.getElementById(id).classList.add("hidden");
+    });
+    document.getElementById(screenId).classList.remove("hidden");
+  }
+
+  // فتح درس معين
+  function openLesson(lessonId) {
+    currentLessonId = lessonId;
+    const lesson = lessons.find(l => l.id === lessonId);
+    document.getElementById("lesson-title").textContent = `الدرس ${lesson.id}: ${lesson.title}`;
+    document.getElementById("lesson-content").innerHTML = lesson.content;
+    showScreen("lesson-screen");
+  }
+
+  // تحميل أسئلة الاختبار في شاشة الاختبار
+  function loadTest() {
+    const container = document.getElementById("test-questions");
+    container.innerHTML = "";
+    testQuestions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.style.marginBottom = "15px";
+      const qText = document.createElement("p");
+      qText.textContent = `${i+1}. ${q.question}`;
+      div.appendChild(qText);
+
+      q.options.forEach((opt, idx) => {
+        const label = document.createElement("label");
+        label.style.display = "block";
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q${i}`;
+        radio.value = idx;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(opt));
+        div.appendChild(label);
+      });
+
+      container.appendChild(div);
+    });
+  }
+
+  // تقديم الإجابات وتصحيح الاختبار
+  function submitTest() {
+    let score = 0;
+    for(let i=0; i<testQuestions.length; i++) {
+      const radios = document.getElementsByName(`q${i}`);
+      let answered = false;
+      for(const r of radios) {
+        if(r.checked) {
+          answered = true;
+          if(parseInt(r.value) === testQuestions[i].answer) {
+            score++;
+          }
+          break;
+        }
+      }
+      if(!answered) {
+        alert(`يرجى الإجابة على السؤال رقم ${i+1}`);
+        return;
+      }
+    }
+    showResult(score);
+  }
+
+  // عرض نتيجة الاختبار
+  function showResult(score) {
+    const total = testQuestions.length;
+    const percent = (score/total)*100;
+    let msg = `لقد أجبت على ${score} من أصل ${total} سؤال بشكل صحيح. (${percent.toFixed(1)}%)`;
+
+    if(percent >= 80) {
+      msg += " ممتاز! أنت متقن للموضوع.";
+    } else if(percent >= 50) {
+      msg += " جيد، لكن يُفضل مراجعة الدروس مرة أخرى.";
+    } else {
+      msg += " تحتاج إلى المزيد من الدراسة.";
+    }
+
+    document.getElementById("result-text").textContent = msg;
+    showScreen("result-screen");
+  }
+
+  // عند تحميل الصفحة، جهز الاختبار (لكن لا تظهره)
+  window.onload = function() {
+    loadTest();
+  }
+</script>
+
 </body>
 </html>
