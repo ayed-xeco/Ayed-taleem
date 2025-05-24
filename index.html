@@ -1,229 +1,243 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>تطبيق تعليم ذاتي تفاعلي</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      direction: rtl;
-      margin: 0;
-      background: #f0f4f8;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      min-height: 100vh;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1, h2, h3 {
-      text-align: center;
-      color: #0d47a1;
-    }
-    .hidden {
-      display: none;
-    }
-    .button {
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    .button:disabled {
-      background-color: #9ec6f1;
-      cursor: default;
-    }
-    .question, .lesson {
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin: 15px 0;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-    }
-    .options label {
-      margin-bottom: 10px;
-    }
-    .progress-bar {
-      height: 12px;
-      background: #e0e0e0;
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 15px 0;
-    }
-    .progress {
-      height: 100%;
-      background: #1976d2;
-      width: 0%;
-      transition: width 0.3s;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تطبيق ذاتي تفاعلي</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    margin: 0; padding: 0;
+    direction: rtl;
+    color: #333;
+  }
+  header {
+    background-color: #4caf50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+  main {
+    max-width: 800px;
+    margin: 1rem auto;
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+  }
+  h1, h2 {
+    margin-top: 0;
+  }
+  button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #9e9e9e;
+    cursor: default;
+  }
+  .hidden {
+    display: none;
+  }
+  .lesson-list button {
+    display: block;
+    width: 100%;
+    text-align: right;
+    margin-bottom: 0.5rem;
+  }
+  .progress-container {
+    background-color: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 20px;
+    margin: 1rem 0;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #4caf50;
+    transition: width 0.3s ease;
+  }
+  .chat-box {
+    border: 1px solid #ccc;
+    height: 150px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    background: #f9f9f9;
+  }
+  .chat-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  .chat-message {
+    margin-bottom: 0.5rem;
+  }
+  .chat-message.user {
+    text-align: left;
+    font-weight: bold;
+    color: #2b7a78;
+  }
+  .chat-message.bot {
+    text-align: right;
+    color: #555;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
 
-    <!-- الصفحة 1: البداية -->
-    <div id="startScreen">
-      <h1>مرحباً بك في تطبيق التعليم الذاتي</h1>
-      <input type="text" id="userName" placeholder="ادخل اسمك للبدء" />
-      <div style="text-align: center;">
-        <button class="button" onclick="startLessons()">ابدأ</button>
-      </div>
+<header>
+  <h1>تطبيق التعليم الذاتي التفاعلي</h1>
+</header>
+
+<main>
+
+  <!-- شاشة الترحيب -->
+  <section id="welcome-section">
+    <h2>مرحبًا بك!</h2>
+    <p>يرجى إدخال اسمك للبدء في التعلم:</p>
+    <input type="text" id="userNameInput" placeholder="اسمك هنا" />
+    <button id="startBtn">ابدأ التعلم</button>
+  </section>
+
+  <!-- شاشة الدروس -->
+  <section id="lessons-section" class="hidden">
+    <h2>قائمة الدروس</h2>
+    <div class="lesson-list" id="lessonList"></div>
+    <div class="progress-container" aria-label="شريط التقدم">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
+    <button id="logoutBtn" style="background:#f44336;">تسجيل خروج</button>
+  </section>
 
-    <!-- الصفحة 2: عرض الدروس -->
-    <div id="lessonScreen" class="hidden">
-      <h2 id="welcomeName"></h2>
-      <div class="progress-bar"><div id="lessonProgress" class="progress"></div></div>
-      <div id="lessonText" class="lesson"></div>
-      <div style="text-align:center;">
-        <button class="button" onclick="prevLesson()">السابق</button>
-        <button class="button" onclick="nextLesson()">التالي</button>
-      </div>
-    </div>
+  <!-- شاشة الدرس -->
+  <section id="lesson-section" class="hidden">
+    <h2 id="lessonTitle"></h2>
+    <p id="lessonContent"></p>
+    <video id="lessonVideo" width="100%" controls class="hidden"></video>
+    <button id="startQuizBtn">اختبار الدرس</button>
+    <button id="backToLessonsBtn">رجوع لقائمة الدروس</button>
+  </section>
 
-    <!-- الصفحة 3: الأسئلة -->
-    <div id="quizScreen" class="hidden">
-      <h2>سؤال بعد الدرس</h2>
-      <div id="questionText" class="question"></div>
-      <div id="options" class="options"></div>
-      <div style="text-align:center;">
-        <button class="button" onclick="submitAnswer()">إرسال</button>
-      </div>
-    </div>
+  <!-- شاشة الاختبار -->
+  <section id="quiz-section" class="hidden">
+    <h2>اختبار: <span id="quizLessonTitle"></span></h2>
+    <form id="quizForm"></form>
+    <button id="submitQuizBtn">إرسال الإجابات</button>
+    <button id="cancelQuizBtn">إلغاء الاختبار</button>
+  </section>
 
-    <!-- الصفحة 4: النتيجة -->
-    <div id="resultScreen" class="hidden">
-      <h2>نتيجتك النهائية</h2>
-      <p id="finalResult" style="text-align:center; font-size: 20px;"></p>
-      <div style="text-align:center;">
-        <button class="button" onclick="location.reload()">إعادة</button>
-      </div>
-    </div>
+  <!-- شاشة النتائج -->
+  <section id="result-section" class="hidden">
+    <h2>نتائج الاختبار</h2>
+    <p id="resultText"></p>
+    <button id="backToLessonsAfterQuizBtn">العودة إلى قائمة الدروس</button>
+  </section>
 
-  </div>
+  <!-- شاشة المساعد الذكي -->
+  <section id="chatbot-section" class="hidden">
+    <h2>المساعد الذكي</h2>
+    <div class="chat-box" id="chatBox"></div>
+    <input type="text" id="chatInput" class="chat-input" placeholder="اكتب سؤالك هنا..." />
+    <button id="sendChatBtn">إرسال</button>
+    <button id="closeChatBtn" style="background:#f44336;">إغلاق المساعد</button>
+  </section>
 
-  <script>
-    const lessons = [
-      "هذا هو الدرس الأول: مقدمة في التنظيم الذاتي.",
-      "الدرس الثاني: تحديد الأهداف التعليمية.",
-      "الدرس الثالث: إدارة الوقت أثناء التعلم.",
-      "الدرس الرابع: تقييم التقدم وتحسينه.",
-    ];
+  <button id="openChatBtn" style="position: fixed; bottom: 20px; left: 20px; background:#2196F3; color:#fff; border:none; border-radius:50%; width:60px; height:60px; font-size:28px; cursor:pointer;">💬</button>
 
-    const questions = [
-      {
-        question: "ما هو التنظيم الذاتي؟",
-        options: ["تنظيم الحاسوب", "إدارة الشخص لسلوكه وتعلمه", "تنظيم الحصة الدراسية"],
-        correct: 1
-      },
-      {
-        question: "ما الهدف من تحديد أهداف تعليمية؟",
-        options: ["لضياع الوقت", "لتقوية العضلات", "لتحقيق نتائج واضحة"],
-        correct: 2
-      },
-      {
-        question: "كيف يتم إدارة الوقت؟",
-        options: ["بوضع خطة زمنية", "بتأجيل المهام", "بالتصفح العشوائي"],
-        correct: 0
-      },
-      {
-        question: "ما أهمية تقييم التقدم؟",
-        options: ["لمعرفة نقاط القوة والضعف", "لإضاعة الوقت", "لا حاجة له"],
-        correct: 0
-      }
-    ];
+</main>
 
-    let currentLesson = 0;
-    let score = 0;
-    let userName = "";
-
-    function startLessons() {
-      const input = document.getElementById("userName").value.trim();
-      if (input === "") {
-        alert("يرجى إدخال الاسم");
-        return;
-      }
-      userName = input;
-      document.getElementById("startScreen").classList.add("hidden");
-      document.getElementById("lessonScreen").classList.remove("hidden");
-      document.getElementById("welcomeName").textContent = "مرحباً، " + userName;
-      showLesson();
+<script>
+  // بيانات الدروس
+  const lessons = [
+    {
+      id: 1,
+      title: "مقدمة في التفكير النقدي",
+      content: "التفكير النقدي هو القدرة على تحليل المعلومات والأفكار بطريقة منهجية لتقييمها واتخاذ قرارات مدروسة.",
+      video: "", // يمكنك إضافة رابط فيديو هنا إن أردت
+      quiz: [
+        {
+          question: "ما هو التفكير النقدي؟",
+          options: [
+            "إعادة تكرار المعلومات بدون تحليل",
+            "تحليل المعلومات بطريقة منهجية",
+            "التجاهل وعدم الاهتمام",
+            "الاعتماد فقط على الرأي الشخصي"
+          ],
+          answer: 1
+        },
+        {
+          question: "لماذا التفكير النقدي مهم؟",
+          options: [
+            "لأنه يساعد في اتخاذ قرارات مدروسة",
+            "لأنه يجعلنا نصدق كل شيء",
+            "لأنه يعيق الإبداع",
+            "لا أهمية له"
+          ],
+          answer: 0
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "تنظيم الوقت بفعالية",
+      content: "تنظيم الوقت هو مهارة تساعدك على إدارة وقتك بشكل يجعل يومك أكثر إنتاجية.",
+      video: "",
+      quiz: [
+        {
+          question: "ما هي أفضل طريقة لتنظيم الوقت؟",
+          options: [
+            "تأجيل المهام",
+            "تحديد أولويات المهام",
+            "عدم التخطيط",
+            "القيام بكل شيء دفعة واحدة"
+          ],
+          answer: 1
+        }
+      ]
     }
+  ];
 
-    function showLesson() {
-      document.getElementById("lessonText").textContent = lessons[currentLesson];
-      document.getElementById("lessonProgress").style.width = ((currentLesson + 1) / lessons.length) * 100 + "%";
-    }
+  let userName = "";
+  let completedLessons = [];
+  let currentLesson = null;
 
-    function nextLesson() {
-      if (currentLesson < lessons.length - 1) {
-        currentLesson++;
-        showLesson();
-      } else {
-        document.getElementById("lessonScreen").classList.add("hidden");
-        showQuestion();
-        document.getElementById("quizScreen").classList.remove("hidden");
-      }
-    }
+  // اختيار العناصر
+  const welcomeSection = document.getElementById("welcome-section");
+  const lessonsSection = document.getElementById("lessons-section");
+  const lessonSection = document.getElementById("lesson-section");
+  const quizSection = document.getElementById("quiz-section");
+  const resultSection = document.getElementById("result-section");
+  const chatbotSection = document.getElementById("chatbot-section");
 
-    function prevLesson() {
-      if (currentLesson > 0) {
-        currentLesson--;
-        showLesson();
-      }
-    }
+  const userNameInput = document.getElementById("userNameInput");
+  const startBtn = document.getElementById("startBtn");
+  const lessonList = document.getElementById("lessonList");
+  const progressBar = document.getElementById("progressBar");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-    let currentQuestion = 0;
+  const lessonTitle = document.getElementById("lessonTitle");
+  const lessonContent = document.getElementById("lessonContent");
+  const lessonVideo = document.getElementById("lessonVideo");
+  const startQuizBtn = document.getElementById("startQuizBtn");
+  const backToLessonsBtn = document.getElementById("backToLessonsBtn");
 
-    function showQuestion() {
-      const q = questions[currentQuestion];
-      document.getElementById("questionText").textContent = q.question;
-      const optionsDiv = document.getElementById("options");
-      optionsDiv.innerHTML = "";
-      q.options.forEach((opt, index) => {
-        const label = document.createElement("label");
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = "q";
-        input.value = index;
-        label.appendChild(input);
-        label.appendChild(document.createTextNode(" " + opt));
-        optionsDiv.appendChild(label);
-      });
-    }
+  const quizLessonTitle = document.getElementById("quizLessonTitle");
+  const quizForm = document.getElementById("quizForm");
+  const submitQuizBtn = document.getElementById("submitQuizBtn");
+  const cancelQuizBtn = document.getElementById("cancelQuizBtn");
 
-    function submitAnswer() {
-      const selected = document.querySelector('input[name="q"]:checked');
-      if (!selected) {
-        alert("يرجى اختيار إجابة");
-        return;
-      }
-      if (parseInt(selected.value) === questions[currentQuestion].correct) {
-        score++;
-      }
-      currentQuestion++;
-      if (currentQuestion < questions.length) {
-        showQuestion();
-      } else {
-        document.getElementById("quizScreen").classList.add("hidden");
-        document.getElementById("resultScreen").classList.remove("hidden");
-        document.getElementById("finalResult").textContent = `${userName}، لقد أجبت بشكل صحيح على ${score} من ${questions.length} أسئلة.`;
-      }
-    }
-  </script>
-</body>
-</html>
+  const resultText = document.getElementById("resultText");
+  const backToLessonsAfterQuizBtn = document.getElementById("backToLessonsAfterQuizBtn");
+
+  const openChatBtn = document.getElementById("openChatBtn");
